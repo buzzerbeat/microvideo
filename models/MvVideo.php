@@ -92,12 +92,26 @@ class MvVideo extends \yii\db\ActiveRecord
     public function getVideo() {
         return $this->hasOne(Video::className(), ['id'=>'video_id']);
     }
+
+    public function getRelationVideos() {
+        $cc = MvVideo::find()->limit(10)->all();
+        return $cc;
+    }
+
     public function getSid() {
         return Utility::sid($this->id);
     }
 
     public function getElapsedTime() {
         return Utility::time_get_past($this->update_time);
+    }
+
+    public function extraFields()
+    {
+        $fields = [
+            'relationVideos',
+        ];
+        return $fields;
     }
 
     public function fields()

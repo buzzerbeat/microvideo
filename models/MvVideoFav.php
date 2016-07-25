@@ -5,24 +5,22 @@ namespace microvideo\models;
 use Yii;
 
 /**
- * This is the model class for table "mv_video_count".
+ * This is the model class for table "mv_video_fav".
  *
- * @property integer $video_id
- * @property integer $like
+ * @property integer $id
+ * @property integer $mv_video_id
+ * @property integer $user_id
  * @property integer $fav
- * @property integer $dig
- * @property integer $played
- * @property integer $bury
- * @property integer $share
+ * @property integer $time
  */
-class MvVideoCount extends \yii\db\ActiveRecord
+class MvVideoFav extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'mv_video_count';
+        return 'mv_video_fav';
     }
 
     /**
@@ -39,7 +37,8 @@ class MvVideoCount extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['like', 'fav', 'dig', 'played', 'bury', 'share'], 'integer'],
+            [['mv_video_id', 'user_id', 'fav', 'time'], 'required'],
+            [['mv_video_id', 'user_id', 'fav', 'time'], 'integer'],
         ];
     }
 
@@ -49,13 +48,11 @@ class MvVideoCount extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'video_id' => 'Video ID',
-            'like' => 'Like',
-            'dig' => 'Dig',
+            'id' => 'ID',
+            'mv_video_id' => 'Mv Video ID',
+            'user_id' => 'User ID',
             'fav' => 'Fav',
-            'played' => 'Played',
-            'bury' => 'Bury',
-            'share' => 'Share',
+            'time' => 'Time',
         ];
     }
 }

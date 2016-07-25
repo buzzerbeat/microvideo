@@ -9,9 +9,14 @@
 namespace microvideo\controllers;
 
 use common\components\Utility;
+use common\models\Video;
 use microvideo\models\MvVideo;
+use microvideo\models\VideoFavForm;
+use microvideo\models\VideoLikeForm;
 use wallpaper\models\WpImage;
+use Yii;
 use yii\data\ActiveDataProvider;
+use yii\filters\auth\HttpBearerAuth;
 use yii\rest\Controller;
 use yii\web\Response;
 
@@ -29,7 +34,10 @@ class VideoController extends Controller
 //                return $q->from('random_cache')->max('updated_at');
 //            },
 //        ];
-
+        $behaviors['authenticator'] = [
+            'class' => HttpBearerAuth::className(),
+            'only' => ['fav',  'like', 'fav-list'],
+        ];
 
         return $behaviors;
     }
@@ -55,20 +63,51 @@ class VideoController extends Controller
         ]);
     }
 
+    public function actionFavList() {
+        $user = \Yii::$app->user->identity;
+        $query =  MvVideo::find()
+            ->leftJoin('mv_video_fav', '`mv_video_fav`.`mv_video_id` = `mv_video`.`id`')
+            ->where([
+                'status' => MvVideo::STATUS_ACTIVE,
+                '`mv_video_fav`.`user_id`' => $user->id,
+            ]);
+        return new ActiveDataProvider([
+            'query' => $query->orderBy('id desc')
+        ]);
+    }
+
 
     public function actionView($sid)
     {
-        return MvVideo::findOne(Utility::id($sid));
+        return WpImage::findOne(Utility::id($sid));
     }
 
     public function actionDecode()
     {
         \Yii::$app->response->format = Response::FORMAT_RAW;
-        $code = \Yii::$app->request->post("code");
-        $code = str_replace("\n", '', $code);
+        $code = \Yii::$app->request->get("code");
         exec("node " . __DIR__ . "/../../console/tt_video.js '" . $code . "'", $output);
         echo array_shift($output);
 
+    }
+
+
+    public function actionLike()
+    {
+        $likeForm = new VideoLikeForm();
+        if ($likeForm->load(Yii::$app->getRequest()->post(), '') && $likeForm->like()) {
+            return ["status"=>0, "message"=>""];
+        }
+        return ["status"=>1, "message"=>implode(",", $likeForm->getFirstErrors())];
+    }
+
+    public function actionFav()
+    {
+        $favForm = new VideoFavForm();
+        if ($favForm->load(Yii::$app->getRequest()->post(), '') && $favForm->fav()) {
+            return ["status"=>0, "message"=>""];
+        }
+        return ["status"=>1, "message"=>implode(",", $favForm->getFirstErrors())];
 
     }
 }

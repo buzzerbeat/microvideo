@@ -79,7 +79,7 @@ class VideoController extends Controller
 
     public function actionView($sid)
     {
-        return WpImage::findOne(Utility::id($sid));
+        return MvVideo::findOne(Utility::id($sid));
     }
 
     public function actionDecode()

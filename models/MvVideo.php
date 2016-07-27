@@ -94,7 +94,7 @@ class MvVideo extends \yii\db\ActiveRecord
     }
 
     public function getRelationVideos() {
-        $cc = MvVideo::find()->limit(10)->all();
+        $cc = MvVideo::find()->limit(10)->orderBy('id DESC')->all();
         return $cc;
     }
 

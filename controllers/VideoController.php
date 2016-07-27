@@ -85,7 +85,8 @@ class VideoController extends Controller
     public function actionDecode()
     {
         \Yii::$app->response->format = Response::FORMAT_RAW;
-        $code = \Yii::$app->request->get("code");
+		$code = \Yii::$app->request->post("code");
+		$code = str_replace("\n", '', $code);
         exec("node " . __DIR__ . "/../../console/tt_video.js '" . $code . "'", $output);
         echo array_shift($output);
 

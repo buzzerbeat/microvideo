@@ -68,14 +68,24 @@ class VideoController extends Controller
         $query =  MvVideo::find()
             ->leftJoin('mv_video_fav', '`mv_video_fav`.`mv_video_id` = `mv_video`.`id`')
             ->where([
-                'status' => MvVideo::STATUS_ACTIVE,
                 '`mv_video_fav`.`user_id`' => $user->id,
             ]);
         return new ActiveDataProvider([
-            'query' => $query->orderBy('id desc')
+            'query' => $query->orderBy('`mv_video_fav`.`time` desc')
         ]);
     }
 
+    public function actionLikeList() {
+        $user = \Yii::$app->user->identity;
+        $query =  MvVideo::find()
+            ->leftJoin('mv_video_like', '`mv_video_like`.`mv_video_id` = `mv_video`.`id`')
+            ->where([
+                '`mv_video_like`.`user_id`' => $user->id,
+            ]);
+        return new ActiveDataProvider([
+            'query' => $query->orderBy('`mv_video_like`.`time` desc')
+        ]);
+    }
 
     public function actionView($sid)
     {

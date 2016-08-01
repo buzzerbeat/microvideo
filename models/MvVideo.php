@@ -89,6 +89,30 @@ class MvVideo extends \yii\db\ActiveRecord
             ->via('catRels');
     }
 
+    public function getVideoCount() {
+        return $this->hasOne(MvVideoCount::className(), ['video_id'=>'id']);
+    }
+	
+	public function getCountPlayed() {
+		return $this->videoCount->played;
+	}
+
+	public function getCountLike() {
+		return $this->videoCount->like;
+	}
+
+	public function getCountFav() {
+		return $this->videoCount->fav;
+	}
+
+	public function getCountBury() {
+		return $this->videoCount->bury;
+	}
+
+	public function getCountShare() {
+		return $this->videoCount->share;
+	}
+
     public function getVideo() {
         return $this->hasOne(Video::className(), ['id'=>'video_id']);
     }
@@ -124,6 +148,9 @@ class MvVideo extends \yii\db\ActiveRecord
             'video',
             'keywords',
             'categories',
+            'countPlayed',
+            'countLike',
+            'countBury',
         ];
         return $fields;
     }

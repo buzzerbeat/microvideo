@@ -61,7 +61,7 @@ class MvKeyword extends \yii\db\ActiveRecord
     public function fields()
     {
         $fields = parent::fields();
-        unset($fields['id'], $fields['rank']);
+        unset($fields['id'], $fields['rank'], $fields['tag_id'], $fields['is_filter']);
         $fields[] = 'sid';
         return $fields;
     }

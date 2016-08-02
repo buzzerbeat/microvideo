@@ -134,6 +134,7 @@ class MvVideo extends \yii\db\ActiveRecord
     {
         $fields = [
             'relationVideos',
+            'tags'
         ];
         return $fields;
     }
@@ -146,12 +147,18 @@ class MvVideo extends \yii\db\ActiveRecord
             'desc',
             'elapsedTime',
             'video',
-            'keywords',
-            'categories',
+            //'keywords',
+            //'categories',
             'countPlayed',
             'countLike',
             'countBury',
         ];
         return $fields;
+    }
+    
+    public function getTags()
+    {
+        return $this->hasMany(MvTag::className(), ['id' => 'mv_tag_id'])
+        ->viaTable('mv_video_tag_rel', ['mv_video_id' => 'id']);
     }
 }

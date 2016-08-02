@@ -35,8 +35,10 @@ return [
             'rules' => [
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'video'],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'category'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'tag'],
                 'GET,HEAD videos/<sid>' => 'video/view',
                 'GET,HEAD video/decode/<code>' => 'video/decode',
+                'GET,HEAD tags/<sid>' => 'tag/view',
             ],
         ],
 //        */

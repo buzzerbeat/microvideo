@@ -44,15 +44,20 @@ class VideoController extends Controller
     public function actionIndex()
     {
 
-        $cat = \Yii::$app->request->get('cat', 0);
+        //$cat = \Yii::$app->request->get('cat', 0);
+        $tagSid = \yii::$app->request->get('tag', '');
         $from = \Yii::$app->request->get('from', '');
         $query =  MvVideo::find()
-            ->leftJoin('mv_video_category_rel', '`mv_video_category_rel`.`video_id` = `mv_video`.`id`')
+            //->leftJoin('mv_video_category_rel', '`mv_video_category_rel`.`video_id` = `mv_video`.`id`')
             ->where([
                 'status' => MvVideo::STATUS_ACTIVE,
             ]);
-        if ($cat) {
+        /* if ($cat) {
             $query->andWhere(['`mv_video_category_rel`.`category_id`' => $cat]);
+        } */
+        if(!empty($tagSid)){
+        	$query->leftJoin('mv_video_tag_rel', '`mv_video_tag_rel`.`mv_video_id` = `mv_video`.`id`')
+        	   ->andWhere(['`mv_video_tag_rel`.`mv_tag_id`' => Utility::id($tagSid)]);
         }
         if (!empty($from)) {
             $query->andWhere(['like', 'key', $from]);

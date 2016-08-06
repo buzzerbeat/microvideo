@@ -36,7 +36,7 @@ class VideoController extends Controller
 //        ];
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::className(),
-            'only' => ['fav',  'like', 'fav-list'],
+            'only' => ['fav',  'like', 'fav-list', 'like-list'],
         ];
 
         return $behaviors;

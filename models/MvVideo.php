@@ -12,10 +12,8 @@ use Yii;
  * @property integer $id
  * @property integer $video_id
  * @property integer $status
- * @property string $key
  * @property string $title
  * @property string $desc
- * @property string $source_url
  * @property string $create_time
  * @property string $update_time
  */
@@ -51,8 +49,8 @@ class MvVideo extends \yii\db\ActiveRecord
     {
         return [
             [['video_id', 'status', 'create_time', 'update_time'], 'integer'],
-            [['key'], 'required'],
-            [['title', 'desc', 'source_url','key'], 'string'],
+            [['video_id'], 'required'],
+            [['title', 'desc'], 'string'],
         ];
     }
 
@@ -65,10 +63,8 @@ class MvVideo extends \yii\db\ActiveRecord
             'id' => 'ID',
             'video_id' => 'Video ID',
             'status' => 'Status',
-            'key' => 'Key',
             'title' => 'Title',
             'desc' => 'Desc',
-            'source_url' => 'Source Url',
             'create_time' => 'Create Time',
             'update_time' => 'Update Time',
         ];
@@ -93,12 +89,17 @@ class MvVideo extends \yii\db\ActiveRecord
         return $this->hasOne(MvVideoCount::className(), ['video_id'=>'id']);
     }
 	
-	public function getCountPlayed() {
-		return $this->videoCount->played;
+    public function getCountPlayed() {
+        if ($this->videoCount->played >= 10000) {
+            return round($this->videoCount->played/10000, 1) . '万';
+        }
+        else {
+    		return $this->videoCount->played . '';
+        }
 	}
 
 	public function getCountLike() {
-		return $this->videoCount->like;
+		return $this->videoCount->like . '';
 	}
 
 	public function getCountFav() {
@@ -106,12 +107,26 @@ class MvVideo extends \yii\db\ActiveRecord
 	}
 
 	public function getCountBury() {
-		return $this->videoCount->bury;
+		return $this->videoCount->bury . '';
 	}
 
 	public function getCountShare() {
 		return $this->videoCount->share;
 	}
+
+    public function getIosAlert() {
+        $rand = rand(0, 1);
+        if ($rand == 0) {
+            return [
+                'code'=>'asdfasss' . rand(0, 999),
+                'message'=>"哈哈哈？",
+                'confirm' => '去给好评',
+                'refuse' => '不想要',
+                'link'=>'https://itunes.apple.com/cn/app/id1128648541?mt=8&at=1000l8vm',
+            ]; 
+        }
+        return array();
+    }
 
     public function getVideo() {
         return $this->hasOne(Video::className(), ['id'=>'video_id']);
@@ -147,11 +162,10 @@ class MvVideo extends \yii\db\ActiveRecord
             'desc',
             'elapsedTime',
             'video',
-            //'keywords',
-            //'categories',
             'countPlayed',
             'countLike',
             'countBury',
+            'iosAlert',
         ];
         return $fields;
     }

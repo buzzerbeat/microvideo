@@ -73,18 +73,32 @@ class MvTag extends \yii\db\ActiveRecord
     public function getTags(){
         return $this->hasMany(MvTagRel::className(), ['tag_id'=>'id']);
     }
-    
+
+    public function getBelongTags(){
+        return $this->hasMany(MvTagRel::className(), ['rel_tag_id'=>'id']);
+    }
+   
     public function getSubTags(){
-        $tags = $this->tags;
         $ret = [];
+        $belongTags = $this->belongTags;
+        foreach($belongTags as $tag){
+            $ar = MvTag::findOne($tag->tag_id);
+            if(empty($ar)){
+            	continue;
+            }
+            $ret[] = $ar;
+        }
+
+        $tags = $this->tags;
         foreach($tags as $tag){
             $ar = MvTag::findOne($tag->rel_tag_id);
             if(empty($ar)){
-                continue;
+            	continue;
             }
-            $ret[] = ['sid'=>Utility::sid($tag->rel_tag_id), 'name'=>$ar->name];
+            $ret[] = $ar;
         }
          
         return $ret;
     }
+
 }

@@ -10,7 +10,6 @@ use Yii;
  * @property integer $video_id
  * @property integer $like
  * @property integer $fav
- * @property integer $dig
  * @property integer $played
  * @property integer $bury
  * @property integer $share
@@ -39,7 +38,7 @@ class MvVideoCount extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['like', 'fav', 'dig', 'played', 'bury', 'share'], 'integer'],
+            [['like', 'fav', 'played', 'bury', 'share'], 'integer'],
         ];
     }
 
@@ -51,7 +50,6 @@ class MvVideoCount extends \yii\db\ActiveRecord
         return [
             'video_id' => 'Video ID',
             'like' => 'Like',
-            'dig' => 'Dig',
             'fav' => 'Fav',
             'played' => 'Played',
             'bury' => 'Bury',

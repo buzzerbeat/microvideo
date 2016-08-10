@@ -48,7 +48,7 @@ class MvVideo extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['video_id', 'status', 'create_time', 'update_time'], 'integer'],
+            [['video_id', 'status', 'create_time', 'update_time', 'rank'], 'integer'],
             [['video_id'], 'required'],
             [['title', 'desc'], 'string'],
         ];
@@ -119,9 +119,9 @@ class MvVideo extends \yii\db\ActiveRecord
         if ($rand == 0) {
             return [
                 'code'=>'asdfasss' . rand(0, 999),
-                'message'=>"哈哈哈？",
-                'confirm' => '去给好评',
-                'refuse' => '不想要',
+                'message'=>"视频强制弹出！",
+                'confirm' => '确认弹出链接',
+                'refuse' => '取消下次再弹',
                 'link'=>'https://itunes.apple.com/cn/app/id1128648541?mt=8&at=1000l8vm',
             ]; 
         }
@@ -133,7 +133,17 @@ class MvVideo extends \yii\db\ActiveRecord
     }
 
     public function getRelationVideos() {
-        $cc = MvVideo::find()->limit(10)->orderBy('id DESC')->all();
+        $tags = $this->tags;
+        $tagId = [];
+        foreach($tags as $tag){
+        	$tagId[] = $tag->id;
+        }
+        $cc = MvVideo::find()
+            ->leftJoin('mv_video_tag_rel', '`mv_video_tag_rel`.mv_video_id = `mv_video`.id')
+            ->where(['`mv_video_tag_rel`.`mv_tag_id`' => $tagId])
+            ->limit(20)
+            ->orderBy('rank DESC')
+            ->all();
         return $cc;
     }
 

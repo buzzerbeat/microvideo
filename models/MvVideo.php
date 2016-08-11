@@ -48,7 +48,7 @@ class MvVideo extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['video_id', 'status', 'create_time', 'update_time', 'rank'], 'integer'],
+            [['video_id', 'status', 'create_time', 'update_time', 'rank','review'], 'integer'],
             [['video_id'], 'required'],
             [['title', 'desc'], 'string'],
         ];

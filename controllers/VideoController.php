@@ -55,9 +55,14 @@ class VideoController extends Controller
         /* if ($cat) {
             $query->andWhere(['`mv_video_category_rel`.`category_id`' => $cat]);
         } */
+        $query->orderBy('id desc');
         if(!empty($tagSid)){
         	$query->leftJoin('mv_video_tag_rel', '`mv_video_tag_rel`.`mv_video_id` = `mv_video`.`id`')
         	   ->andWhere(['`mv_video_tag_rel`.`mv_tag_id`' => Utility::id($tagSid)]);
+        }
+        else {
+            $query->andWhere('create_time > ' . (time() - 86400*3));
+            $query->orderBy('rank desc');
         }
         if (!empty($from)) {
             $query->andWhere(['like', 'key', $from]);

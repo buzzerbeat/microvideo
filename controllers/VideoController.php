@@ -47,10 +47,11 @@ class VideoController extends Controller
         //$cat = \Yii::$app->request->get('cat', 0);
         $tagSid = \yii::$app->request->get('tag', '');
         $from = \Yii::$app->request->get('from', '');
+        $status = \Yii::$app->request->get('status', 0);
         $query =  MvVideo::find()
             //->leftJoin('mv_video_category_rel', '`mv_video_category_rel`.`video_id` = `mv_video`.`id`')
             ->where([
-                'status' => MvVideo::STATUS_ACTIVE,
+                'status' => empty($status) ? MvVideo::STATUS_ACTIVE : $status,
             ]);
         /* if ($cat) {
             $query->andWhere(['`mv_video_category_rel`.`category_id`' => $cat]);

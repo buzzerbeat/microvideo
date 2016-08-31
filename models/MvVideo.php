@@ -2,6 +2,7 @@
 
 namespace microvideo\models;
 
+use backend\models\microvideo\MvTag;
 use common\components\Utility;
 use common\models\Video;
 use Yii;
@@ -21,6 +22,7 @@ class MvVideo extends \yii\db\ActiveRecord
 {
     const STATUS_ACTIVE = 1;
     const STATUS_INACTIVE = 0;
+    const STATUS_DELETE = 99;
 
     const STATUS_MAP = [
         self::STATUS_INACTIVE => "不可用",

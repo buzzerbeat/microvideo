@@ -38,6 +38,7 @@ class MvTag extends \yii\db\ActiveRecord
         return [
             [['name'], 'required'],
             [['name'], 'string', 'max' => 40],
+            [['count'], 'integer']
         ];
     }
 
@@ -49,6 +50,7 @@ class MvTag extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'name' => 'Name',
+            'count' => 'count'
         ];
     }
     

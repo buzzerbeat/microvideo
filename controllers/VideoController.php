@@ -26,14 +26,13 @@ class VideoController extends Controller
     public function behaviors()
     {
         $behaviors = parent::behaviors();
-//        $behaviors[] = [
-//            'class' => 'yii\filters\HttpCache',
-//            'only' => ['index'],
-//            'lastModified' => function ($action, $params) {
-//                $q = new \yii\db\Query();
-//                return $q->from('random_cache')->max('updated_at');
-//            },
-//        ];
+        $behaviors[] = [
+            'class' => 'yii\filters\HttpCache',
+            'only' => ['index'],
+            'lastModified' => function ($action, $params) {
+                return MvVideo::find()->max('update_time');
+            },
+        ];
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::className(),
             'only' => ['fav',  'like', 'fav-list', 'like-list'],
@@ -43,7 +42,6 @@ class VideoController extends Controller
     }
     public function actionIndex()
     {
-
         //$cat = \Yii::$app->request->get('cat', 0);
         $tagSid = \yii::$app->request->get('tag', '');
         $from = \Yii::$app->request->get('from', '');

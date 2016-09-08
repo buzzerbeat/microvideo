@@ -27,17 +27,18 @@ class VideoController extends Controller
     {
         $behaviors = parent::behaviors();
         $behaviors[] = [
-                'class' => 'yii\filters\PageCache',
-                'only' => ['index'],
-                'duration' => 180,
-                'variations' => [
-                    \Yii::$app->language,
-                ],
-                'dependency' => [
-                    'class' => 'common\components\MvDbDependency',
-                    'sql' => 'SELECT COUNT(*) FROM mv_video',
-                ],
-            ];
+            'class' => 'yii\filters\PageCache',
+            'only' => ['index'],
+            'duration' => 180,
+            'variations' => [
+                \yii::$app->request->get('tag', ''),
+                \yii::$app->request->get('page', 0),
+            ],
+            'dependency' => [
+                'class' => 'common\components\MvDbDependency',
+                'sql' => 'SELECT COUNT(*) FROM mv_video',
+            ],
+        ];
 
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::className(),

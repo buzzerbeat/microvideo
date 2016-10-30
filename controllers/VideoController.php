@@ -33,6 +33,9 @@ class VideoController extends Controller
             'variations' => [
                 \yii::$app->request->get('tag', ''),
                 \yii::$app->request->get('page', 0),
+                \yii::$app->request->get('per-page', 54),
+                \yii::$app->request->get('expand', ''),
+                \yii::$app->request->get('cachekey', ''),
             ],
             'dependency' => [
                 'class' => 'common\components\MvDbDependency',
@@ -53,11 +56,7 @@ class VideoController extends Controller
         $tagSid = \yii::$app->request->get('tag', '');
         $from = \Yii::$app->request->get('from', '');
         $status = \Yii::$app->request->get('status', 0);
-        $query =  MvVideo::find()
-            //->leftJoin('mv_video_category_rel', '`mv_video_category_rel`.`video_id` = `mv_video`.`id`')
-            ->where([
-                'status' => empty($status) ? MvVideo::STATUS_ACTIVE : $status,
-            ]);
+        $query = MvVideo::find();
         /* if ($cat) {
             $query->andWhere(['`mv_video_category_rel`.`category_id`' => $cat]);
         } */
@@ -70,12 +69,24 @@ class VideoController extends Controller
             $query->andWhere('create_time > ' . (time() - 86400*3));
             $query->orderBy('rank desc');
         }
+        if (in_array(Utility::id($tagSid), array(76, 2065))) {
+            $query->orderBy('rank desc');
+        }
+        if (in_array(Utility::id($tagSid), array(15145))) {
+            $query->orderBy('update_time desc');
+        }
+        if (!in_array(Utility::id($tagSid), array(28049, 28051, 28048, 28050))) {
+            $query->andWhere(
+                ['status' => empty($status) ? MvVideo::STATUS_ACTIVE : $status]
+            );
+        }
+
         if (!empty($from)) {
             $query->andWhere(['like', 'key', $from]);
 
         }
         return new ActiveDataProvider([
-            'query' => $query->orderBy('id desc')
+            'query' => $query
         ]);
     }
 

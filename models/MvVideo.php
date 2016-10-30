@@ -5,6 +5,7 @@ namespace microvideo\models;
 use backend\models\microvideo\MvTag;
 use common\components\Utility;
 use common\models\Video;
+use common\models\ConfigInfo;
 use Yii;
 
 /**
@@ -88,6 +89,12 @@ class MvVideo extends \yii\db\ActiveRecord
     }
 
     public function getVideoCount() {
+        $vcount = MvVideoCount::findOne(['video_id'=>$this->id]);
+        if (empty($vcount)) {
+            $vcount = new MvVideoCount;
+            $vcount->video_id = $this->id;
+            $vcount->save();
+        }
         return $this->hasOne(MvVideoCount::className(), ['video_id'=>'id']);
     }
 	
@@ -117,15 +124,71 @@ class MvVideo extends \yii\db\ActiveRecord
 	}
 
     public function getIosAlert() {
-        $rand = rand(0, 1);
-        if ($rand == 0) {
+        $id = '1142521176';
+        $minfo = ConfigInfo::getMobileInfo();
+        $ids = array(
+            'xiguashipin'=>'1142521176',
+            'chaokuaishipin'=>'1142177175',
+            'feichangshipin3'=>'1147641462',
+            'jipinshipin'=>'1147955239',
+            'chengrenzhimei'=>'1128746673',
+            'kanpianshenqi'=>'1149339048',
+            'mmplayer'=>'1153645000',
+            'xianfengyingyin'=>'1151488394',
+            'zerovideo'=>'1150856335',
+            'qplayer'=>'1153369190',
+        );
+        if (!empty($minfo['app']) && !empty($ids[$minfo['app']])) {
+            $id = $ids[$minfo['app']];
+        }
+        /*if (2 == $this->review && $minfo['app'] == 'kanpianshenqi') {
+            $rand = [
+                ['name'=>'成人之美', 'id'=>'1128746673'],
+                ['name'=>'超快视频', 'id'=>'1142177175'],
+                ['name'=>'非常影视', 'id'=>'1147641462'],
+                ['name'=>'壁纸真棒', 'id'=>'1129840238'],
+                ['name'=>'轻松一刻', 'id'=>'1034156676'],
+                ['name'=>'西西视频', 'id'=>'1142521176'],
+            ];
+            $info = $rand[rand(0, 2)];
+            //$info = $rand[5];
             return [
-                'code'=>'asdfasss' . rand(0, 999),
-                'message'=>"视频强制弹出！",
-                'confirm' => '确认弹出链接',
-                'refuse' => '取消下次再弹',
-                'link'=>'https://itunes.apple.com/cn/app/id1128648541?mt=8&at=1000l8vm',
+                'code'=>'review2',
+                'message'=>"看劲爆大片，请下载" . $info['name'] . "！\n下载完毕后给五星好评，即可解锁全部劲爆功能！",
+                //'message'=>"看劲爆大片，请下载" . $info['name'] . "！",
+                'confirm' => '去下载',
+                'refuse' => '不看了',
+                'link'=>'https://itunes.apple.com/cn/app/id' . $info['id'] . '?mt=8&at=1000l8vm',
             ]; 
+
+        }*/
+        if (2 == $this->review) {
+            $randnum = rand(0, 5);
+            if ($randnum <= 5) {
+                return [
+                    'code'=>'review2',
+                    'message'=>"离精彩电影只差一步了！\n给五星好评解锁观看！\n评论需要30字以上！",
+                    'confirm' => '去给好评',
+                    'refuse' => '不看了',
+                    'link'=>'https://itunes.apple.com/cn/app/id' . $id . '?mt=8&at=1000l8vm',
+                ]; 
+            }
+            else {
+                $rand = [
+                    ['name'=>'壁纸真棒', 'id'=>'1129840238'],
+                    ['name'=>'壁纸大全', 'id'=>'1132934170'],
+                    ['name'=>'轻松一刻', 'id'=>'1034156676'],
+                ];
+                $info = $rand[rand(0, 2)];
+                return [
+                    'code'=>'review2',
+                    //'message'=>"看劲爆大片，请下载" . $info['name'] . "！\n下载完毕后给五星好评，即可解锁本软件全部劲爆功能！",
+                    'message'=>"看劲爆大片，先请下载" . $info['name'] . "！\n下载完毕后重开本APP，即可解锁本软件全部劲爆功能！",
+                    'confirm' => '去下载',
+                    'refuse' => '不看了',
+                    'link'=>'https://itunes.apple.com/cn/app/id' . $info['id'] . '?mt=8&at=1000l8vm',
+                ]; 
+            }
         }
         return array();
     }
@@ -161,9 +224,14 @@ class MvVideo extends \yii\db\ActiveRecord
     {
         $fields = [
             'relationVideos',
-            'tags'
+            'tags',
+            'test1'
         ];
         return $fields;
+    }
+
+    public function getTest1() {
+        return rand(1, 10);
     }
 
     public function fields()
